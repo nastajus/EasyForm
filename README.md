@@ -29,6 +29,10 @@ flowchart LR
 
 ## What I built
 
+![EasyForm's blank form in the VBA designer, showing the editing and navigation controls and the Resize Form and Respect Filters options](docs/images/easyform-2011-form.png)
+
+*Original screenshot from the November 2011 user guide. The designer view shows the blank layout and the commands available when reviewing a record.*
+
 | Area | Recovered capability |
 | --- | --- |
 | Record review | A modeless VBA UserForm displayed one worksheet row at a time. Excel remained available alongside the form. Textboxes could be sized for multi-line content and configured with scrollbars in the designer. |
@@ -36,10 +40,19 @@ flowchart LR
 | Worksheet refresh | **Read** pulled changes from the active worksheet and recomputed the field count, headings, records, and navigation state. |
 | Schema discovery | The form used row 1 for field labels and detected the last populated header. Generic routines loaded and wrote fields using numbered label/textbox pairs. |
 | Layout customization | Staff could move, resize, and duplicate control pairs in the visual designer and save the layout with the workbook. Adaptive sizing could hide unused fields, reposition the controls below them, and warn when the form lacked enough pairs. |
+| Field presentation | Each textbox could have its own font size, dimensions, and scrolling settings. In new-record mode the form dimmed the record counters, then restored their normal colour on return to browsing. |
 | Existing records | **Write** transferred form values to the worksheet. **Copy** appended form values at the end. **Delete** asked for confirmation before removing an entire row. These are historical write paths with data-safety limitations. |
 | New records | A separate **New** state cleared the form and changed which actions were available. **Cancel** returned to existing-record mode. An earlier snapshot contains a complete append branch. The latest snapshot has an insertion regression. |
 | Filtered review | A **Respect Filters** option let navigation count and resolve visible worksheet rows, including rows hidden manually. Later versions introduced a visible-position-to-row lookup. Some write and delete handlers retained incompatible row calculations. |
 | Workbook integration | The Ribbon package had **Easy Forms**, **Edit layout**, **Help**, and **About** commands. The editor launched from the workbook, which also stored its layout. A blank template and a tailored layout survive in the archive. |
+
+![The original layout editor with a numbered label and textbox pair selected](docs/images/easyform-2011-layout.png)
+
+*Moving a field pair in the visual designer.*
+
+![Four EasyForm field pairs configured with different sizes, including visibly larger text in the second and third fields](docs/images/easyform-2011-font-sizes.png)
+
+*The 2011 guide shows how to set the font size for an entire field.*
 
 ## Scope and limitations
 
@@ -47,14 +60,14 @@ flowchart LR
 - **Editing semantics.** The form writes textbox values into cells and can remove whole rows. It can overwrite formulas, and **Copy** appends values without cloning the source row's formatting. The recovered editor lacks reliable unsaved-change prompts and an undo action. Switching the active worksheet while the form is open can change which data it targets.
 - **Record identity.** In later snapshots, filtered navigation and mutations can disagree on the target row. **Write** or **Delete** on a filtered table can affect the wrong row. In the latest build, direct jump can leave a stale display, and the new-record insertion gate can reject populated forms.
 - **Scale.** Counting and visible-row lookup scan worksheet rows, and many position variables use VBA's 16-bit `Integer`. Large worksheets can encounter overflow or slow refreshes.
-- **Deferred work.** Matching worksheet cell colours, multiple independently configured forms per workbook, global navigation shortcuts, and zoom were discussed. The imported colour utility is present, while cell-colour matching was deferred.
+- **Formatting scope.** Whole-field styling was configurable in the form designer. The guide explicitly excludes mixed formatting within a textbox, such as bold or italics on selected words. Automatically matching worksheet cell colours was a proposed enhancement, alongside multiple layouts per workbook, global navigation shortcuts, and zoom.
 - **Historical outcome.** The archive records a November handoff, a guide, and prepared templates. Adoption after handoff and measured time savings remain unverified.
 
 ## Using a recovered workbook
 
 The archive preserves original workbooks and extracted VBA. The workbook carries the form designer state and Excel integration needed for historical testing.
 
-A headless check on 64-bit Excel 16 opened sampled `.xlsm` and `.xls` workbooks read-only with macros disabled. The later recovered VBA contains legacy Windows API declarations in an imported colour module that block compilation of that module on 64-bit Office. The Ribbon XML is present in the sampled `.xlsm` files. The original Ribbon callbacks and forms were unverified at runtime on this installation. [Microsoft's 64-bit VBA compatibility documentation](https://learn.microsoft.com/en-us/office/client-developer/shared/compatibility-between-the-32-bit-and-64-bit-versions-of-office)
+The November 2011 guide reports testing in **Excel 2007 and Excel 2010 for Windows**. The `.xlsm` template offered Ribbon shortcuts. The guide also described a separate `.xls` workflow for Excel 2003 and earlier using Excel's macro menu.
 
 On a compatible desktop Excel setup, the historical workflow was to open an authorized disposable copy under local macro policy, put a synthetic table on the intended worksheet, launch **Easy Forms** from the Ribbon, and use **Read** after worksheet edits. **Edit layout** opened or pointed users to the VBA designer, where the numbered control pairs could be arranged. Use disposable data for any write-path testing.
 
