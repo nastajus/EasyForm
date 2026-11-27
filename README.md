@@ -8,24 +8,7 @@ During review meetings, staff had to scroll across wide worksheets to piece toge
 
 The diagram uses synthetic field names to illustrate how one worksheet row became a compact review form.
 
-```mermaid
-flowchart LR
-    subgraph Sheet["Wide Excel worksheet"]
-        direction TB
-        H["Row 1 · ID, Status, Summary, Next step"]
-        R["Row 8 · R-007, In review, Draft ready, Confirm details"]
-        H --- R
-    end
-    subgraph Form["EasyForm · One record"]
-        direction TB
-        A["R-007 · In review"]
-        B["Summary<br/>Draft ready"]
-        C["Next step<br/>Confirm details"]
-        A --- B --- C
-    end
-    H -->|"Use headers as labels"| Form
-    R -->|"Load row values"| Form
-```
+![A highlighted worksheet row mapped to a compact EasyForm record](docs/diagrams/worksheet-to-record.svg)
 
 ## What I built
 
@@ -49,6 +32,10 @@ flowchart LR
 ![The original layout editor with a numbered label and textbox pair selected](docs/images/easyform-2011-layout.png)
 
 *Moving a field pair in the visual designer.*
+
+![The same fields in stacked and review layouts with different sizes and a larger summary field](docs/diagrams/configurable-layouts.svg)
+
+*The same worksheet fields can be arranged around the review workflow.*
 
 ![Four EasyForm field pairs configured with different sizes, including visibly larger text in the second and third fields](docs/images/easyform-2011-font-sizes.png)
 
@@ -85,13 +72,7 @@ On a compatible desktop Excel setup, the historical workflow was to open an auth
 
 With contiguous rows, the record number could double as a worksheet position. Filtering separated those concepts. This synthetic example shows why a write operation needs the same resolved row as the record display.
 
-```mermaid
-flowchart LR
-    A["Visible record 1"] --> B["Worksheet row 2"]
-    C["Visible record 2"] --> D["Worksheet row 4"]
-    E["Worksheet row 3 · Hidden"]
-    E -. "Skipped during filtered navigation" .-> D
-```
+![Filtered navigation maps visible record two to worksheet row four while the old calculation points to hidden row three](docs/diagrams/filtered-row-mapping.svg)
 
 That indexing change crossed navigation, counts, refresh, and mutations. The recovered code captures the design challenge: display and write paths need to agree on record identity even when the user changes how the sheet is viewed.
 
